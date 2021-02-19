@@ -38,18 +38,26 @@ namespace TaskForCleverence
     {
         static void Main()
         {
-
-            Parallel.For(0, 50, i =>
-            {
-                if (i % 2 == 0)
-                    MyServer.AddToCount(2);
-                else
-                    Console.WriteLine("GetCount " + MyServer.GetCount());
-            });
-            Console.WriteLine("GetCount " + MyServer.GetCount());
+            new Program().Run();
             Console.WriteLine("Done.");
             Console.ReadKey();
         }
 
+        private void Run()
+        {
+            EventHandler h = new EventHandler(MyEventHandler);
+            AsyncCaller ac = new AsyncCaller(h);
+            if (ac.Invoke(5000, this, EventArgs.Empty))
+                Console.WriteLine("Completed successfully");
+            else
+                Console.WriteLine("Timeout occured");
+        }
+
+        private void MyEventHandler(object sender, EventArgs e)
+        {
+            Console.WriteLine("Enter Handler");
+            Thread.Sleep(6000);
+            Console.WriteLine("Exit Handler");
+        }
     }
 }
